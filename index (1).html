@@ -1,0 +1,2767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<!-- ============================================================
+     HEAD — META, SEO, FONTS
+     ============================================================ -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description"  content="VULPE — Pixel art, environments and visual identity for indie games. Available for commissions and freelance work.">
+<meta name="keywords"     content="pixel art, indie game art, pixel artist, character sprites, environment art, game UI, cover art, freelance pixel art, VULPE">
+<meta name="author"       content="Vulpe">
+<meta name="theme-color"  content="#8B0000">
+
+<!-- Open Graph (social sharing) -->
+<meta property="og:type"        content="website">
+<meta property="og:title"       content="VULPE — Pixel Art for Indie Games">
+<meta property="og:description" content="Pixel art, environments and visual identity for indie games. Available for commissions.">
+<meta property="og:image"       content="/images/og-cover.png">
+<meta property="og:url"         content="https://vulpe.github.io">
+
+<!-- Twitter card -->
+<meta name="twitter:card"        content="summary_large_image">
+<meta name="twitter:title"       content="VULPE — Pixel Art for Indie Games">
+<meta name="twitter:description" content="Pixel art, environments and visual identity for indie games.">
+<meta name="twitter:image"       content="/images/og-cover.png">
+
+<!-- Favicon (place favicon.ico in your root folder) -->
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+<title>VULPE — Pixel Art for Indie Games</title>
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=VT323&display=swap" rel="stylesheet">
+
+<style>
+
+/* ============================================================
+   1. CSS VARIABLES — Edit colors and fonts here globally
+   ============================================================ */
+:root {
+  /* Core palette — analogous reds */
+  --crimson:        #8B0000;
+  --crimson-deep:   #5C0000;
+  --neon-red:       #C0392B;
+  --neon-glow:      #E74C3C;
+  --wine:           #722F37;
+  --wine-dark:      #3D0A15;
+
+  /* Backgrounds */
+  --void:     #040406;   /* deepest black */
+  --surface:  #0E0B10;   /* card surfaces */
+  --surface2: #14101A;   /* lighter surface */
+
+  /* Borders */
+  --border:        rgba(139,0,0,0.20);
+  --border-bright: rgba(192,57,43,0.55);
+
+  /* Text */
+  --text-primary:   #EDE5EE;
+  --text-secondary: #9A8A9C;
+  --text-dim:       #50425A;
+
+  /* Fonts */
+  --font-display: 'Rajdhani', sans-serif;
+  --font-mono:    'Share Tech Mono', monospace;
+  --font-serif:   'Cormorant Garamond', serif;
+  --font-pixel:   'VT323', monospace;
+
+  /* Glow shadows */
+  --glow-xs: 0 0 8px  rgba(192,57,43,0.40);
+  --glow-sm: 0 0 18px rgba(192,57,43,0.45);
+  --glow-md: 0 0 36px rgba(192,57,43,0.30), 0 0 72px rgba(139,0,0,0.14);
+  --glow-lg: 0 0 60px rgba(192,57,43,0.22), 0 0 140px rgba(139,0,0,0.10);
+
+  /* Easing curves */
+  --ease-expo:   cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-smooth: cubic-bezier(0.4,  0, 0.2, 1);
+}
+
+/* ============================================================
+   2. CSS RESET & BASE STYLES
+   ============================================================ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  scroll-padding-top: 72px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--void);
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  overflow-x: hidden;
+  cursor: none;                     /* hide default cursor — we use a custom one */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Remove mobile tap highlight completely */
+a, button, [role="button"] {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+a   { text-decoration: none; color: inherit; }
+img { display: block; max-width: 100%; }
+ul  { list-style: none; }
+
+/* ============================================================
+   3. GLOBAL CRT / RETRO SCREEN OVERLAY
+      A subtle scanline + noise texture sits on top of everything.
+   ============================================================ */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9990;
+  pointer-events: none;
+
+  /* Fine scanlines */
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.07) 2px,
+      rgba(0,0,0,0.07) 4px
+    );
+
+  /* Very slight vignette at the edges */
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
+/* Outer edge vignette */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9989;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 100% 100% at 50% 50%,
+    transparent 60%,
+    rgba(0,0,0,0.55) 100%
+  );
+}
+
+/* ============================================================
+   4. CUSTOM CURSOR (desktop only — hidden on touch devices)
+   ============================================================ */
+#cursor-dot, #cursor-ring {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9995;
+  /* position is set via JS — translate keeps it centered */
+  transform: translate(-50%, -50%);
+  will-change: left, top;
+}
+
+/* The small solid square */
+#cursor-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--neon-red);
+  mix-blend-mode: screen;
+  transition: width 0.18s, height 0.18s, background 0.18s;
+}
+
+/* The larger ring that lerp-follows with a delay */
+#cursor-ring {
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgba(192,57,43,0.45);
+  transition: width 0.25s var(--ease-smooth),
+              height 0.25s var(--ease-smooth),
+              border-color 0.22s;
+  z-index: 9994;
+}
+
+/* States when hovering interactive elements */
+body.cursor-hover #cursor-dot  { width: 5px; height: 5px; background: var(--neon-glow); }
+body.cursor-hover #cursor-ring { width: 58px; height: 58px; border-color: rgba(231,76,60,0.70); }
+
+/* Hide custom cursor on touch devices */
+@media (pointer: coarse) {
+  #cursor-dot, #cursor-ring { display: none; }
+  body { cursor: auto; }
+}
+
+/* ============================================================
+   5. LOADING SCREEN
+   ============================================================ */
+#loader {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: var(--void);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  transition: opacity 0.8s var(--ease-expo), visibility 0.8s;
+}
+#loader.out { opacity: 0; visibility: hidden; }
+
+.ld-logo {
+  font-family: var(--font-pixel);
+  font-size: clamp(52px, 10vw, 80px);
+  color: var(--neon-red);
+  letter-spacing: 16px;
+  text-shadow: var(--glow-md);
+  animation: ldPulse 1.1s ease-in-out infinite alternate;
+}
+@keyframes ldPulse {
+  from { text-shadow: 0 0 20px rgba(192,57,43,0.55); }
+  to   { text-shadow: 0 0 50px rgba(192,57,43,1.0), 0 0 100px rgba(139,0,0,0.50); }
+}
+
+.ld-track {
+  width: 200px;
+  height: 1px;
+  background: rgba(139,0,0,0.20);
+  overflow: hidden;
+}
+.ld-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--crimson), var(--neon-glow));
+  width: 0;
+  animation: ldFill 1.6s var(--ease-expo) 0.3s forwards;
+  box-shadow: 0 0 12px var(--neon-red);
+}
+@keyframes ldFill { to { width: 100%; } }
+
+.ld-text {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 5px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  animation: blink 1.1s step-end infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
+
+/* ============================================================
+   6. NAVIGATION
+   ============================================================ */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 500;
+  padding: 22px 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid transparent;
+  transition: background 0.4s, border-color 0.4s, padding 0.3s;
+}
+
+/* Frosted glass when scrolled */
+nav.scrolled {
+  background: rgba(4,4,6,0.94);
+  border-color: var(--border);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  padding: 14px 52px;
+}
+
+.nav-logo {
+  font-family: var(--font-pixel);
+  font-size: 26px;
+  letter-spacing: 5px;
+  color: var(--neon-red);
+  text-shadow: var(--glow-xs);
+}
+
+.nav-links {
+  display: flex;
+  gap: 40px;
+}
+.nav-links a {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  position: relative;
+  transition: color 0.2s;
+}
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -5px; left: 0; right: 0;
+  height: 1px;
+  background: var(--neon-red);
+  box-shadow: var(--glow-xs);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s var(--ease-expo);
+}
+.nav-links a:hover { color: var(--text-primary); }
+.nav-links a:hover::after { transform: scaleX(1); }
+
+.nav-cta {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--neon-red);
+  border: 1px solid var(--neon-red);
+  padding: 9px 24px;
+  position: relative;
+  overflow: hidden;
+  transition: color 0.3s;
+}
+.nav-cta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--neon-red);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.32s var(--ease-expo);
+}
+.nav-cta:hover { color: var(--void); }
+.nav-cta:hover::before { transform: scaleX(1); }
+.nav-cta span { position: relative; z-index: 1; }
+
+/* Hamburger (mobile) */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  padding: 6px;
+  cursor: pointer;
+}
+.hamburger span {
+  display: block;
+  width: 22px;
+  height: 1px;
+  background: var(--text-secondary);
+  transition: transform 0.3s, opacity 0.3s;
+}
+.hamburger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+/* Mobile drawer menu */
+.mobile-nav {
+  position: fixed;
+  inset: 0;
+  z-index: 490;
+  background: rgba(4,4,6,0.97);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 44px;
+  transform: translateX(100%);
+  transition: transform 0.42s var(--ease-expo);
+}
+.mobile-nav.open { transform: translateX(0); }
+.mobile-nav a {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 8vw, 42px);
+  font-weight: 700;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  transition: color 0.2s;
+}
+.mobile-nav a:hover, .mobile-nav a:active { color: var(--neon-red); }
+
+/* ============================================================
+   7. SHARED SECTION UTILITIES
+   ============================================================ */
+section { padding: 110px 52px; }
+
+/* Section label (small uppercase tag above titles) */
+.s-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 5px;
+  color: var(--neon-red);
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+.s-label::after {
+  content: '';
+  flex: 1;
+  max-width: 52px;
+  height: 1px;
+  background: var(--border-bright);
+}
+
+/* Section title */
+.s-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(30px, 4vw, 58px);
+  line-height: 1.04;
+  text-transform: uppercase;
+  letter-spacing: -0.5px;
+  margin-bottom: 60px;
+}
+.s-title em { font-style: normal; color: var(--neon-red); }
+
+/* Scroll reveal — elements start invisible and slide up */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.80s var(--ease-expo),
+              transform 0.80s var(--ease-expo);
+}
+.reveal.on { opacity: 1; transform: translateY(0); }
+
+/* Elegant full-width separator line */
+.sep {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-bright) 40%,
+                                     var(--border-bright) 60%, transparent);
+  opacity: 0.45;
+}
+
+/* ============================================================
+   8. SHARED BUTTON STYLES
+   ============================================================ */
+
+/* Filled primary button */
+.btn-primary {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--void);
+  background: var(--neon-red);
+  padding: 17px 44px;
+  position: relative;
+  overflow: hidden;
+  border: none;
+  cursor: pointer;
+  transition: box-shadow 0.3s, color 0.3s;
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px,
+                     100% 100%, 12px 100%, 0 calc(100% - 12px));
+}
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--neon-glow);
+  transform: translateX(-100%);
+  transition: transform 0.38s var(--ease-expo);
+}
+.btn-primary:hover { box-shadow: var(--glow-md); }
+.btn-primary:hover::before { transform: translateX(0); }
+.btn-primary > span { position: relative; z-index: 1; }
+
+/* Ghost / outline button */
+.btn-outline {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  background: transparent;
+  padding: 16px 44px;
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: color 0.3s, border-color 0.3s;
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px,
+                     100% 100%, 12px 100%, 0 calc(100% - 12px));
+}
+.btn-outline::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(139,0,0,0.12);
+  transform: translateX(-100%);
+  transition: transform 0.38s var(--ease-expo);
+}
+.btn-outline:hover { color: var(--text-primary); border-color: var(--border-bright); }
+.btn-outline:hover::before { transform: translateX(0); }
+.btn-outline > span { position: relative; z-index: 1; }
+
+/* Pulsing glow ring — used on the main "Hire Me" button */
+.btn-pulse { position: relative; }
+.btn-pulse::after {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border: 1px solid rgba(192,57,43,0.40);
+  animation: pulseRing 2.6s ease-out infinite;
+  pointer-events: none;
+}
+@keyframes pulseRing {
+  0%   { opacity: 1; transform: scale(1);    }
+  100% { opacity: 0; transform: scale(1.18); }
+}
+
+/* ============================================================
+   9. HERO SECTION
+   ============================================================ */
+#hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 130px 52px 110px;
+  overflow: hidden;
+}
+
+/* Animated star canvas fills the entire hero */
+#starfield {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  will-change: transform;
+}
+
+/* Subtle perspective grid overlay */
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(139,0,0,0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(139,0,0,0.055) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 75% 80% at 50% 50%, black 20%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 75% 80% at 50% 50%, black 20%, transparent 100%);
+}
+
+/* Atmospheric glow orbs */
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  pointer-events: none;
+  z-index: 0;
+}
+.orb-a {
+  width: 780px; height: 780px;
+  background: radial-gradient(circle, rgba(139,0,0,0.26), transparent 70%);
+  top: -300px; right: -200px;
+  animation: orbA 10s ease-in-out infinite alternate;
+}
+.orb-b {
+  width: 460px; height: 460px;
+  background: radial-gradient(circle, rgba(92,0,0,0.20), transparent 70%);
+  bottom: -140px; left: 4%;
+  animation: orbB 13s ease-in-out infinite alternate;
+}
+.orb-c {
+  width: 320px; height: 320px;
+  background: radial-gradient(circle, rgba(192,57,43,0.10), transparent 70%);
+  top: 35%; left: 38%;
+  animation: orbB 8s ease-in-out infinite alternate-reverse;
+}
+@keyframes orbA {
+  from { transform: translate(0,0) scale(1); }
+  to   { transform: translate(-44px, 44px) scale(1.13); }
+}
+@keyframes orbB {
+  from { transform: translate(0,0) scale(1); }
+  to   { transform: translate(26px,-26px) scale(1.08); }
+}
+
+/* Corner UI decorations */
+.corner {
+  position: absolute;
+  z-index: 2;
+  width: 46px; height: 46px;
+  opacity: 0;
+  animation: fadeIn 1s 2.7s forwards;
+}
+.corner-tl { top: 82px;  left:  52px; border-top:    1px solid var(--border-bright); border-left:  1px solid var(--border-bright); }
+.corner-tr { top: 82px;  right: 52px; border-top:    1px solid var(--border-bright); border-right: 1px solid var(--border-bright); }
+.corner-bl { bottom: 80px; left: 52px; border-bottom: 1px solid var(--border-bright); border-left:  1px solid var(--border-bright); }
+.corner-br { bottom: 80px; right:52px; border-bottom: 1px solid var(--border-bright); border-right: 1px solid var(--border-bright); }
+
+/* The actual text content of the hero */
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 880px;
+}
+
+.hero-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 6px;
+  color: var(--neon-red);
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 34px;
+  opacity: 0;
+  animation: fadeUp 0.75s var(--ease-expo) 1.7s forwards;
+}
+.hero-eyebrow::before {
+  content: '';
+  width: 28px; height: 1px;
+  background: var(--neon-red);
+  box-shadow: var(--glow-xs);
+}
+
+.hero-h1 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(38px, 6.4vw, 96px);
+  line-height: 1.0;
+  letter-spacing: -1px;
+  text-transform: uppercase;
+  margin-bottom: 28px;
+  opacity: 0;
+  animation: fadeUp 0.90s var(--ease-expo) 1.95s forwards;
+}
+/* Colored word */
+.hero-h1 em {
+  font-style: normal;
+  color: var(--neon-red);
+  text-shadow: 0 0 44px rgba(192,57,43,0.55), 0 0 88px rgba(139,0,0,0.22);
+}
+/* Hollow/stroke word */
+.hero-h1 .stroke {
+  -webkit-text-stroke: 1px rgba(237,229,238,0.25);
+  color: transparent;
+}
+
+.hero-sub {
+  font-family: var(--font-serif);
+  font-weight: 300;
+  font-size: clamp(16px, 1.9vw, 22px);
+  color: var(--text-secondary);
+  letter-spacing: 0.5px;
+  line-height: 1.68;
+  max-width: 530px;
+  margin-bottom: 54px;
+  opacity: 0;
+  animation: fadeUp 0.90s var(--ease-expo) 2.15s forwards;
+}
+
+.hero-cta {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  opacity: 0;
+  animation: fadeUp 0.90s var(--ease-expo) 2.35s forwards;
+}
+
+/* Bouncing scroll indicator at bottom-center */
+.scroll-cue {
+  position: absolute;
+  bottom: 38px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  opacity: 0;
+  animation: fadeIn 1s 3.1s forwards;
+}
+.scroll-cue-dot {
+  width: 6px; height: 6px;
+  background: var(--neon-red);
+  box-shadow: var(--glow-xs);
+  animation: scrollBounce 1.7s ease-in-out infinite;
+}
+@keyframes scrollBounce {
+  0%,100% { transform: translateY(0);   opacity: 1;   }
+  50%      { transform: translateY(9px); opacity: 0.3; }
+}
+.scroll-cue span {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 4px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+}
+
+/* ============================================================
+   10. FEATURED PREVIEW STRIP
+       Shows artwork immediately below the hero so visitors
+       see the work without scrolling far.
+   ============================================================ */
+#featured {
+  padding: 0 52px 90px;
+}
+
+.featured-header {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 5px;
+  color: var(--neon-red);
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+.featured-header::before {
+  content: '';
+  width: 24px; height: 1px;
+  background: var(--neon-red);
+}
+
+/* 3-column strip — first cell is wide (2fr) */
+.featured-strip {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 8px;
+}
+
+/* Individual featured artwork cell */
+.feat-item {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  cursor: pointer;
+  transition: border-color 0.32s, transform 0.42s var(--ease-expo);
+}
+.feat-item:first-child  { aspect-ratio: 16 / 9; }
+.feat-item:not(:first-child) { aspect-ratio: 4 / 5; }
+.feat-item:hover { border-color: var(--border-bright); transform: translateY(-3px); }
+
+/* The image inside — zooms on hover */
+.feat-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  image-rendering: pixelated;   /* keep pixel-art crisp */
+  transition: transform 0.55s var(--ease-expo), filter 0.4s;
+  transform-origin: center;
+}
+.feat-item:hover .feat-img {
+  transform: scale(1.06);
+  filter: brightness(1.08);
+}
+
+/* Gradient info overlay that fades in on hover */
+.feat-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(4,4,6,0.90) 0%, transparent 55%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 20px 24px;
+  opacity: 0;
+  transition: opacity 0.30s;
+}
+.feat-item:hover .feat-overlay { opacity: 1; }
+.feat-title-sm {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+.feat-tag-sm {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: var(--neon-red);
+  text-transform: uppercase;
+  margin-top: 5px;
+}
+
+/* ============================================================
+   11. ABOUT SECTION
+   ============================================================ */
+#about { background: var(--void); }
+
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 88px;
+  align-items: center;
+  max-width: 1240px;
+}
+
+.about-quote {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(20px, 2.7vw, 36px);
+  line-height: 1.46;
+  color: var(--text-primary);
+  margin-bottom: 30px;
+  padding-left: 28px;
+  position: relative;
+}
+.about-quote::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, var(--neon-red), transparent);
+  box-shadow: var(--glow-xs);
+}
+
+.about-body {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  line-height: 1.82;
+  color: var(--text-secondary);
+  margin-bottom: 18px;
+}
+
+.about-stats {
+  display: flex;
+  gap: 48px;
+  margin-top: 48px;
+  padding-top: 48px;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.stat-num {
+  font-family: var(--font-display);
+  font-size: 48px;
+  font-weight: 700;
+  color: var(--neon-red);
+  text-shadow: var(--glow-xs);
+  line-height: 1;
+}
+.stat-lbl {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-top: 6px;
+}
+
+/* Pixel-art portrait frame */
+.about-frame {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+.about-frame::before {
+  content: 'VULPE';
+  font-family: var(--font-pixel);
+  font-size: 110px;
+  color: rgba(139,0,0,0.06);
+  position: absolute;
+  bottom: 12px; right: 12px;
+  line-height: 1;
+  pointer-events: none;
+}
+.about-inner {
+  position: absolute;
+  inset: 18px;
+  border: 1px solid var(--border);
+}
+#aboutCanvas { display: block; width: 100%; height: 100%; }
+
+.about-badge {
+  position: absolute;
+  bottom: -18px; right: -18px;
+  background: var(--crimson);
+  padding: 14px 22px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--text-primary);
+  text-transform: uppercase;
+}
+
+/* ============================================================
+   12. PORTFOLIO SECTION
+   ============================================================ */
+#portfolio { background: var(--surface); }
+
+/* Filter row */
+.filter-row {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-bottom: 44px;
+}
+.f-btn {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  background: none;
+  border: 1px solid var(--border);
+  padding: 9px 20px;
+  cursor: pointer;
+  transition: all 0.22s;
+}
+.f-btn:hover, .f-btn.active {
+  color: var(--text-primary);
+  border-color: var(--border-bright);
+  background: rgba(139,0,0,0.12);
+}
+
+/* Masonry-like grid */
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  max-width: 1300px;
+}
+/* Tall cell */
+.g-item:nth-child(2)  { aspect-ratio: 1 / 1.18; }
+/* Wide cell spanning 2 columns */
+.g-item:nth-child(5)  { grid-column: span 2; aspect-ratio: 2 / 1; }
+/* Extra tall */
+.g-item:nth-child(8)  { aspect-ratio: 1 / 1.22; }
+
+/* Each gallery card */
+.g-item {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  cursor: pointer;
+  aspect-ratio: 1;
+  transition: border-color 0.32s, transform 0.44s var(--ease-expo), box-shadow 0.44s;
+}
+.g-item:hover {
+  border-color: var(--border-bright);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.55);
+}
+
+/* Real image inside gallery cell — zooms and pans on hover */
+.g-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  image-rendering: pixelated;       /* keep pixel-art crisp */
+  transition: transform 0.55s var(--ease-expo), filter 0.4s;
+  transform-origin: center center;
+  will-change: transform;
+}
+.g-item:hover .g-img {
+  transform: scale(1.07) translateY(-2px);
+  filter: brightness(1.1) saturate(1.1);
+}
+
+/* Hover info overlay */
+.g-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(4,4,6,0.88) 0%, rgba(4,4,6,0.20) 55%, transparent 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 24px;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 0.30s;
+}
+.g-item:hover .g-overlay { opacity: 1; }
+
+.g-icon {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  width: 40px; height: 40px;
+  border: 1px solid var(--border-bright);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: var(--text-secondary);
+  transition: transform 0.3s var(--ease-expo), opacity 0.3s;
+  opacity: 0;
+}
+.g-item:hover .g-icon {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.g-title {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  text-align: center;
+}
+.g-tag {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: var(--neon-red);
+  text-transform: uppercase;
+}
+
+/* ── Lightbox ── */
+#lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 600;
+  background: rgba(4,4,6,0.97);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.32s;
+  padding: 24px;
+}
+#lightbox.open { opacity: 1; pointer-events: all; }
+
+#lb-inner {
+  position: relative;
+  max-width: min(90vw, 1100px);
+  width: 100%;
+}
+
+/* The image shown in lightbox */
+#lb-img {
+  display: block;
+  width: 100%;
+  max-height: 82vh;
+  object-fit: contain;
+  image-rendering: pixelated;
+  border: 1px solid var(--border-bright);
+  box-shadow: var(--glow-lg);
+}
+
+#lb-close {
+  position: absolute;
+  top: -44px; right: 0;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--text-secondary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+#lb-close:hover { color: var(--neon-red); }
+
+#lb-meta {
+  margin-top: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+#lb-title { font-family: var(--font-display); font-size: 18px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; }
+#lb-cat   { font-family: var(--font-mono); font-size: 9px; letter-spacing: 3px; color: var(--neon-red); text-transform: uppercase; }
+
+/* ============================================================
+   13. OPEN-FOR-COMMISSIONS BANNER
+   ============================================================ */
+#open-cta {
+  padding: 100px 52px;
+  background: var(--void);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+#open-cta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 55% 100% at 50% 0%,
+                               rgba(139,0,0,0.15), transparent 70%);
+  pointer-events: none;
+}
+
+.cta-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 4px;
+  color: var(--neon-red);
+  text-transform: uppercase;
+  border: 1px solid var(--border);
+  padding: 9px 22px;
+  margin-bottom: 32px;
+  position: relative;
+  z-index: 1;
+}
+.cta-dot {
+  width: 6px; height: 6px;
+  background: var(--neon-red);
+  border-radius: 50%;
+  animation: ctaDot 1.9s ease-in-out infinite;
+  box-shadow: var(--glow-xs);
+}
+@keyframes ctaDot {
+  0%,100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.3; transform: scale(0.65); }
+}
+
+.cta-title {
+  font-family: var(--font-display);
+  font-size: clamp(34px, 5.2vw, 70px);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.5px;
+  line-height: 1.04;
+  margin-bottom: 22px;
+  position: relative; z-index: 1;
+}
+.cta-title em { font-style: normal; color: var(--neon-red); text-shadow: var(--glow-md); }
+
+.cta-sub {
+  font-family: var(--font-serif);
+  font-size: clamp(15px, 1.7vw, 20px);
+  color: var(--text-secondary);
+  line-height: 1.68;
+  margin-bottom: 50px;
+  position: relative; z-index: 1;
+}
+
+.cta-btns {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+  position: relative; z-index: 1;
+}
+
+/* ============================================================
+   14. SERVICES SECTION
+   ============================================================ */
+#services { background: var(--surface); }
+
+.svc-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  max-width: 1240px;
+}
+
+.svc-card {
+  background: var(--void);
+  border: 1px solid var(--border);
+  padding: 46px 34px;
+  position: relative;
+  overflow: hidden;
+  cursor: default;
+  transition: border-color 0.32s, transform 0.44s var(--ease-expo);
+}
+/* Top accent line that slides in */
+.svc-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--neon-red), transparent);
+  transform: scaleX(0);
+  transition: transform 0.42s var(--ease-expo);
+  box-shadow: var(--glow-xs);
+}
+/* Subtle radial glow inside card on hover */
+.svc-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at top left, rgba(139,0,0,0.08), transparent 65%);
+  opacity: 0;
+  transition: opacity 0.36s;
+}
+.svc-card:hover { border-color: var(--border-bright); transform: translateY(-4px); }
+.svc-card:hover::before { transform: scaleX(1); }
+.svc-card:hover::after  { opacity: 1; }
+
+.svc-icon  { font-size: 34px; display: block; margin-bottom: 22px; }
+.svc-num   { font-family: var(--font-mono); font-size: 9px; letter-spacing: 4px; color: var(--crimson); margin-bottom: 13px; }
+.svc-name  { font-family: var(--font-display); font-size: 21px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 14px; }
+.svc-desc  { font-family: var(--font-serif); font-size: 15px; line-height: 1.75; color: var(--text-secondary); }
+
+/* ============================================================
+   15. PROCESS / WORKFLOW SECTION
+   ============================================================ */
+#process { background: var(--void); }
+
+.process-steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+  max-width: 1240px;
+  position: relative;
+}
+
+/* Horizontal connecting line */
+.process-steps::before {
+  content: '';
+  position: absolute;
+  top: 62px;
+  left: 12.5%; right: 12.5%;
+  height: 1px;
+  background: linear-gradient(90deg, var(--border-bright), var(--border-bright));
+  z-index: 0;
+}
+
+.proc-step {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 44px 30px 36px;
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  transition: border-color 0.32s, transform 0.42s var(--ease-expo);
+}
+.proc-step:hover { border-color: var(--border-bright); transform: translateY(-4px); }
+
+.proc-num {
+  font-family: var(--font-pixel);
+  font-size: 52px;
+  color: var(--crimson);
+  opacity: 0.35;
+  line-height: 1;
+  margin-bottom: 18px;
+}
+.proc-icon {
+  font-size: 28px;
+  display: block;
+  margin-bottom: 14px;
+}
+.proc-title {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  color: var(--text-primary);
+}
+.proc-desc {
+  font-family: var(--font-serif);
+  font-size: 14px;
+  line-height: 1.72;
+  color: var(--text-secondary);
+}
+
+/* ============================================================
+   16. TESTIMONIALS / SOCIAL PROOF SECTION
+   ============================================================ */
+#testimonials { background: var(--surface); }
+
+/* Stats bar across the top */
+.proof-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+  max-width: 1240px;
+  margin-bottom: 60px;
+}
+
+.proof-stat {
+  background: var(--void);
+  border: 1px solid var(--border);
+  padding: 36px 28px;
+  text-align: center;
+  transition: border-color 0.3s;
+}
+.proof-stat:hover { border-color: var(--border-bright); }
+.ps-num {
+  font-family: var(--font-display);
+  font-size: 52px;
+  font-weight: 700;
+  color: var(--neon-red);
+  text-shadow: var(--glow-xs);
+  line-height: 1;
+}
+.ps-lbl {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-top: 8px;
+}
+
+/* Testimonial cards */
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  max-width: 1240px;
+}
+
+.testi-card {
+  background: var(--void);
+  border: 1px solid var(--border);
+  padding: 36px 32px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s, transform 0.4s var(--ease-expo);
+}
+.testi-card::before {
+  content: '"';
+  font-family: var(--font-pixel);
+  font-size: 90px;
+  color: rgba(139,0,0,0.12);
+  position: absolute;
+  top: 10px; left: 18px;
+  line-height: 1;
+  pointer-events: none;
+}
+.testi-card:hover { border-color: var(--border-bright); transform: translateY(-3px); }
+
+.testi-text {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+  position: relative; z-index: 1;
+}
+
+.testi-author {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.testi-avatar {
+  width: 38px; height: 38px;
+  background: var(--surface2);
+  border: 1px solid var(--border-bright);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-pixel);
+  font-size: 18px;
+  color: var(--neon-red);
+  flex-shrink: 0;
+}
+.testi-name {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.testi-role {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-top: 3px;
+}
+.testi-stars {
+  margin-left: auto;
+  color: var(--neon-red);
+  font-size: 12px;
+  letter-spacing: 2px;
+}
+
+/* ============================================================
+   17. PRICING SECTION
+   ============================================================ */
+#pricing { background: var(--void); }
+
+.price-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  max-width: 1040px;
+}
+
+.price-card {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  padding: 46px 34px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.32s, box-shadow 0.32s,
+              transform 0.44s var(--ease-expo);
+  clip-path: polygon(
+    0 0, calc(100% - 20px) 0, 100% 20px,
+    100% 100%, 20px 100%, 0 calc(100% - 20px)
+  );
+}
+/* Shimmer line on hover */
+.price-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%; right: auto;
+  width: 60%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--neon-red), transparent);
+  transition: left 0.5s var(--ease-expo);
+  box-shadow: var(--glow-xs);
+}
+.price-card:hover { border-color: var(--border-bright); box-shadow: var(--glow-md); transform: translateY(-7px); }
+.price-card:hover::after { left: 140%; }
+
+/* Featured / most popular card */
+.price-card.featured {
+  border-color: rgba(192,57,43,0.70);
+  background: var(--wine-dark);
+}
+.price-card.featured::before {
+  content: 'POPULAR';
+  position: absolute;
+  top: 22px; right: -24px;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 3px;
+  color: var(--void);
+  background: var(--neon-red);
+  padding: 5px 30px;
+  transform: rotate(45deg);
+}
+
+.p-icon   { font-size: 30px; display: block; margin-bottom: 18px; }
+.p-title  { font-family: var(--font-display); font-size: 16px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 6px; }
+.p-from   { font-family: var(--font-mono); font-size: 9px; letter-spacing: 3px; color: var(--text-dim); text-transform: uppercase; margin-bottom: 4px; }
+.p-amount {
+  font-family: var(--font-display);
+  font-size: 56px; font-weight: 700;
+  color: var(--neon-red);
+  text-shadow: var(--glow-xs);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.p-amount sup { font-size: 22px; vertical-align: top; margin-top: 12px; display: inline-block; }
+.p-line   { width: 100%; height: 1px; background: var(--border); margin: 24px 0; }
+.p-list   { display: flex; flex-direction: column; gap: 11px; }
+.p-list li {
+  font-family: var(--font-serif);
+  font-size: 14px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.p-list li::before { content: '▸'; color: var(--neon-red); font-size: 11px; }
+
+.p-cta {
+  display: block;
+  margin-top: 30px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--neon-red);
+  border: 1px solid var(--border-bright);
+  padding: 13px 18px;
+  transition: all 0.3s;
+}
+.p-cta:hover { background: var(--neon-red); color: var(--void); }
+.price-card.featured .p-cta { background: var(--neon-red); color: var(--void); border-color: var(--neon-red); }
+.price-card.featured .p-cta:hover { background: var(--neon-glow); border-color: var(--neon-glow); }
+
+.price-note {
+  text-align: center;
+  margin-top: 44px;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--text-dim);
+}
+
+/* ============================================================
+   18. CONTACT SECTION
+   ============================================================ */
+#contact {
+  background: var(--surface);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+#contact::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 50%; transform: translateX(-50%);
+  width: 800px; height: 800px;
+  background: radial-gradient(circle, rgba(139,0,0,0.10), transparent 70%);
+  pointer-events: none;
+}
+
+.contact-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.contact-title {
+  font-family: var(--font-display);
+  font-size: clamp(34px, 5.2vw, 68px);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.5px;
+  line-height: 1.04;
+  margin-bottom: 22px;
+}
+.contact-title em { font-style: normal; color: var(--neon-red); text-shadow: var(--glow-md); }
+
+.contact-sub {
+  font-family: var(--font-serif);
+  font-size: clamp(15px, 1.7vw, 19px);
+  color: var(--text-secondary);
+  line-height: 1.68;
+  margin-bottom: 54px;
+}
+
+/* 2×2 social button grid */
+.social-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 48px;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.social-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  padding: 16px 22px;
+  position: relative;
+  overflow: hidden;
+  transition: color 0.3s, border-color 0.3s, box-shadow 0.3s;
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px,
+                     100% 100%, 8px 100%, 0 calc(100% - 8px));
+}
+.social-btn::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: rgba(139,0,0,0.14);
+  transform: translateY(100%);
+  transition: transform 0.32s var(--ease-expo);
+}
+.social-btn:hover { color: var(--text-primary); border-color: var(--border-bright); box-shadow: var(--glow-xs); }
+.social-btn:hover::before { transform: translateY(0); }
+.social-btn .si  { font-size: 16px; position: relative; z-index: 1; }
+.social-btn .sl  { position: relative; z-index: 1; }
+
+.contact-email {
+  display: inline-block;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 18px;
+  color: var(--text-dim);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 4px;
+  transition: color 0.22s, border-color 0.22s;
+}
+.contact-email:hover { color: var(--neon-red); border-color: var(--neon-red); }
+
+/* ============================================================
+   19. FOOTER
+   ============================================================ */
+footer {
+  background: var(--void);
+  border-top: 1px solid var(--border);
+  padding: 30px 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+.foot-logo { font-family: var(--font-pixel); font-size: 20px; letter-spacing: 4px; color: var(--crimson); }
+.foot-copy { font-family: var(--font-mono); font-size: 9px; letter-spacing: 3px; color: var(--text-dim); text-transform: uppercase; }
+.foot-tag  { font-family: var(--font-mono); font-size: 9px; letter-spacing: 2px; color: var(--text-dim); text-transform: uppercase; }
+
+/* ============================================================
+   20. KEYFRAMES (shared animations)
+   ============================================================ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ============================================================
+   21. RESPONSIVE — TABLET (≤1100px)
+   ============================================================ */
+@media (max-width: 1100px) {
+  .gallery { grid-template-columns: repeat(2, 1fr); }
+  .g-item:nth-child(2)  { aspect-ratio: 1; }
+  .g-item:nth-child(5)  { grid-column: span 1; aspect-ratio: 1; }
+  .g-item:nth-child(8)  { aspect-ratio: 1; }
+  .svc-grid         { grid-template-columns: repeat(2, 1fr); }
+  .price-grid       { grid-template-columns: 1fr 1fr; }
+  .process-steps    { grid-template-columns: repeat(2, 1fr); }
+  .process-steps::before { display: none; }
+  .proof-stats      { grid-template-columns: repeat(2, 1fr); }
+  .testimonials-grid { grid-template-columns: 1fr 1fr; }
+  .featured-strip   { grid-template-columns: 1fr 1fr; }
+  .feat-item:first-child       { grid-column: span 2; aspect-ratio: 16/8; }
+  .feat-item:not(:first-child) { aspect-ratio: 1; }
+}
+
+/* ============================================================
+   22. RESPONSIVE — MOBILE (≤768px)
+   ============================================================ */
+@media (max-width: 768px) {
+  section        { padding: 74px 22px; }
+  nav, nav.scrolled { padding: 16px 22px; }
+  #hero          { padding: 104px 22px 84px; }
+  #featured      { padding: 0 22px 78px; }
+  #open-cta      { padding: 76px 22px; }
+
+  .nav-links, .nav-cta { display: none; }
+  .hamburger { display: flex; }
+
+  /* Hero adjustments */
+  .corner-tr, .corner-bl, .corner-br { display: none; }
+  .corner-tl { top: 74px; left: 22px; }
+
+  /* Grids collapse to single column */
+  .about-grid        { grid-template-columns: 1fr; gap: 48px; }
+  .about-right       { display: none; }               /* hide portrait on mobile */
+  .featured-strip    { grid-template-columns: 1fr; }
+  .feat-item:first-child, .feat-item:not(:first-child) { grid-column: span 1; aspect-ratio: 4/3; }
+  .gallery           { grid-template-columns: 1fr; gap: 8px; }
+  .g-item            { aspect-ratio: 4/3 !important; grid-column: span 1 !important; }
+  .svc-grid          { grid-template-columns: 1fr; gap: 8px; }
+  .process-steps     { grid-template-columns: 1fr; gap: 8px; }
+  .proof-stats       { grid-template-columns: 1fr 1fr; }
+  .testimonials-grid { grid-template-columns: 1fr; }
+  .price-grid        { grid-template-columns: 1fr; }
+  .social-grid       { grid-template-columns: 1fr; max-width: 300px; }
+
+  footer { flex-direction: column; text-align: center; }
+  .scroll-cue { display: none; }
+}
+
+/* ============================================================
+   23. RESPONSIVE — SMALL MOBILE (≤480px)
+   ============================================================ */
+@media (max-width: 480px) {
+  .hero-cta   { flex-direction: column; align-items: flex-start; }
+  .cta-btns   { flex-direction: column; align-items: center; }
+  .about-stats { flex-direction: column; gap: 20px; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     CURSOR — Two elements: dot (instant) + ring (lerp-delayed)
+     ============================================================ -->
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+
+<!-- ============================================================
+     LOADING SCREEN
+     ============================================================ -->
+<div id="loader">
+  <div class="ld-logo">VULPE</div>
+  <div class="ld-track"><div class="ld-bar"></div></div>
+  <div class="ld-text">Loading portfolio…</div>
+</div>
+
+<!-- ============================================================
+     NAVIGATION
+     ============================================================ -->
+<nav id="mainNav">
+  <a href="#hero" class="nav-logo">VULPE</a>
+
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#portfolio">Work</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+
+  <a href="#open-cta" class="nav-cta"><span>Hire Me</span></a>
+
+  <button class="hamburger" id="hamburger" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Mobile drawer -->
+<div class="mobile-nav" id="mobileNav">
+  <a href="#about"     class="mn">About</a>
+  <a href="#portfolio" class="mn">Work</a>
+  <a href="#services"  class="mn">Services</a>
+  <a href="#process"   class="mn">Process</a>
+  <a href="#pricing"   class="mn">Pricing</a>
+  <a href="#open-cta"  class="mn">Hire Me</a>
+  <a href="#contact"   class="mn">Contact</a>
+</div>
+
+<!-- ============================================================
+     HERO SECTION
+     ============================================================ -->
+<section id="hero">
+  <!-- Animated star background (drawn via JS canvas) -->
+  <canvas id="starfield"></canvas>
+
+  <!-- Perspective grid overlay -->
+  <div class="hero-grid"></div>
+
+  <!-- Atmospheric light blobs -->
+  <div class="orb orb-a"></div>
+  <div class="orb orb-b"></div>
+  <div class="orb orb-c"></div>
+
+  <!-- Frame corner decorations -->
+  <div class="corner corner-tl"></div>
+  <div class="corner corner-tr"></div>
+  <div class="corner corner-bl"></div>
+  <div class="corner corner-br"></div>
+
+  <!-- Main text -->
+  <div class="hero-content">
+    <div class="hero-eyebrow">Pixel Artist &amp; Game Visual Designer</div>
+
+    <h1 class="hero-h1">
+      Your game<br>
+      deserves a <em>world</em><br>
+      <span class="stroke">people remember.</span>
+    </h1>
+
+    <p class="hero-sub">
+      Pixel art, environments and visual identity for indie games.
+    </p>
+
+    <div class="hero-cta">
+      <a href="#open-cta" class="btn-primary btn-pulse"><span>Hire Me</span></a>
+      <a href="#portfolio" class="btn-outline"><span>View Portfolio</span></a>
+    </div>
+  </div>
+
+  <!-- Bouncing scroll cue -->
+  <div class="scroll-cue">
+    <div class="scroll-cue-dot"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- ============================================================
+     FEATURED PREVIEW — shows work immediately after hero
+     ============================================================ -->
+<div id="featured" class="reveal">
+  <div class="featured-header">Featured Work</div>
+
+  <!--
+    TO ADD REAL IMAGES:
+    Replace the src="" attributes below with your actual image paths.
+    Example: src="images/art1.png"
+    Put your images in an /images/ folder next to index.html.
+  -->
+  <div class="featured-strip" id="featuredStrip">
+
+    <div class="feat-item" data-title="Void Temple" data-cat="Environment">
+      <img class="feat-img" src="images/art1.png"
+           alt="Void Temple — pixel environment art"
+           onerror="this.parentElement.style.background='#1a0808';this.style.display='none'">
+      <div class="feat-overlay">
+        <div class="feat-title-sm">Void Temple</div>
+        <div class="feat-tag-sm">Environment</div>
+      </div>
+    </div>
+
+    <div class="feat-item" data-title="Shadow Warrior" data-cat="Character">
+      <img class="feat-img" src="images/art2.png"
+           alt="Shadow Warrior — pixel character sprite"
+           onerror="this.parentElement.style.background='#08081a';this.style.display='none'">
+      <div class="feat-overlay">
+        <div class="feat-title-sm">Shadow Warrior</div>
+        <div class="feat-tag-sm">Character</div>
+      </div>
+    </div>
+
+    <div class="feat-item" data-title="Eclipse Gate" data-cat="Cover Art">
+      <img class="feat-img" src="images/art3.png"
+           alt="Eclipse Gate — cover art"
+           onerror="this.parentElement.style.background='#060412';this.style.display='none'">
+      <div class="feat-overlay">
+        <div class="feat-title-sm">Eclipse Gate</div>
+        <div class="feat-tag-sm">Cover Art</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="sep"></div>
+
+<!-- ============================================================
+     ABOUT SECTION
+     ============================================================ -->
+<section id="about">
+  <div class="about-grid">
+
+    <!-- Left: text content -->
+    <div class="reveal">
+      <div class="s-label">About Me</div>
+
+      <p class="about-quote">
+        "Driven by passion for games, I transform ideas into memorable pixel art experiences."
+      </p>
+
+      <p class="about-body">
+        I'm Vulpe — a pixel artist and indie game creator with 4 years of experience building worlds one pixel at a time. I specialize in environments, characters, and complete visual identities that bring game visions to life.
+      </p>
+      <p class="about-body">
+        My work blends meticulous craftsmanship with narrative depth. Every scene carries atmosphere, intention, and the kind of detail that players notice — and remember.
+      </p>
+
+      <div class="about-stats">
+        <div>
+          <div class="stat-num">4+</div>
+          <div class="stat-lbl">Years of art</div>
+        </div>
+        <div>
+          <div class="stat-num">30+</div>
+          <div class="stat-lbl">Projects done</div>
+        </div>
+        <div>
+          <div class="stat-num">∞</div>
+          <div class="stat-lbl">Pixel love</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: pixel-art portrait (drawn via JS canvas) -->
+    <div class="about-right reveal" style="transition-delay:0.18s">
+      <div class="about-frame">
+        <div class="about-inner">
+          <canvas id="aboutCanvas"></canvas>
+        </div>
+        <div class="about-badge">Available for work</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- ============================================================
+     PORTFOLIO SECTION
+     ============================================================ -->
+<section id="portfolio">
+  <div class="s-label reveal">Portfolio</div>
+  <h2 class="s-title reveal">Selected <em>Work</em></h2>
+
+  <!-- Category filter buttons -->
+  <div class="filter-row reveal">
+    <button class="f-btn active" data-f="all">All</button>
+    <button class="f-btn" data-f="environment">Environments</button>
+    <button class="f-btn" data-f="character">Characters</button>
+    <button class="f-btn" data-f="cover">Cover Art</button>
+    <button class="f-btn" data-f="scene">Scenes</button>
+  </div>
+
+  <!--
+    GALLERY — HOW TO ADD YOUR REAL IMAGES:
+    Each .g-item uses a real <img> tag with src="images/artN.png".
+    Drop your artwork into an /images/ folder and update the src attributes.
+    The data-cat attribute controls which filter button shows/hides it.
+    Supported categories: environment | character | cover | scene
+  -->
+  <div class="gallery" id="gallery">
+
+    <div class="g-item reveal" data-cat="environment" style="transition-delay:0.00s">
+      <img class="g-img" src="images/art1.png" alt="Crimson Ruins">
+      <div class="g-overlay">
+        <div class="g-icon">⊕</div>
+        <div class="g-title">Crimson Ruins</div>
+        <div class="g-tag">Environment</div>
+      </div>
+    </div>
+
+    <div class="g-item reveal" data-cat="character" style="transition-delay:0.06s">
+      <img class="g-img" src="images/art2.png" alt="Shadow Warrior">
+      <div class="g-overlay">
+        <div class="g-icon">⊕</div>
+        <div class="g-title">Shadow Warrior</div>
+        <div class="g-tag">Character</div>
+      </div>
+    </div>
+
+    <div class="g-item reveal" data-cat="cover" style="transition-delay:0.12s">
+      <img class="g-img" src="images/art3.png" alt="Eclipse Gate">
+      <div class="g-overlay">
+        <div class="g-icon">⊕</div>
+        <div class="g-title">Eclipse Gate</div>
+        <div class="g-tag">Cover Art</div>
+      </div>
+    </div>
+
+    <div class="g-item reveal" data-cat="scene" style="transition-delay:0.18s">
+      <img class="g-img" src="images/art4.png" alt="Neon Market">
+      <div class="g-overlay">
+        <div class="g-icon">⊕</div>
+        <div class="g-title">Neon Market</div>
+        <div class="g-tag">Scene</div>
+      </div>
+    </div>
+
+    <div class="g-item reveal" data-cat="environment" style="transition-delay:0.24s">
+      <img class="g-img" src="images/art5.png" alt="Void Temple">
+      <div class="g-overlay">
+        <div class="g-icon">⊕</div>
+        <div class="g-title">Void Temple</div>
+        <div class="g-tag">Environment</div>
+      </div>
+    </div>
+
+    <div class="g-item reveal" data-cat="environment" style="transition-delay:0.30s">
+      <img class="g-img" src="images/art6.png" alt="Hex Forest">
+      <div class="g-overlay">
+        <div class="g-icon">⊕</div>
+        <div class="g-title">Hex Forest</div>
+        <div class="g-tag">Environment</div>
+      </div>
+    </div>
+
+    <div class="g-item reveal" data-cat="cover" style="transition-delay:0.36s">
+      <img class="g-img" src="images/art7.png" alt="Boss Encounter">
+      <div class="g-overlay">
+        <div class="g-icon">⊕</div>
+        <div class="g-title">Boss Encounter</div>
+        <div class="g-tag">Cover Art</div>
+      </div>
+    </div>
+
+    <div class="g-item reveal" data-cat="character" style="transition-delay:0.42s">
+      <img class="g-img" src="images/art8.png" alt="Soul Fragment">
+      <div class="g-overlay">
+        <div class="g-icon">⊕</div>
+        <div class="g-title">Soul Fragment</div>
+        <div class="g-tag">Character</div>
+      </div>
+    </div>
+
+    <div class="g-item reveal" data-cat="scene" style="transition-delay:0.48s">
+      <img class="g-img" src="images/art9.png" alt="Dungeon Cave">
+      <div class="g-overlay">
+        <div class="g-icon">⊕</div>
+        <div class="g-title">Dungeon Cave</div>
+        <div class="g-tag">Scene</div>
+      </div>
+    </div>
+
+  </div><!-- /.gallery -->
+</section>
+
+<!-- Lightbox (hidden — shown when a gallery item is clicked) -->
+<div id="lightbox">
+  <div id="lb-inner">
+    <button id="lb-close">✕ Close</button>
+    <img id="lb-img" src="" alt="">
+    <div id="lb-meta">
+      <span id="lb-title"></span>
+      <span id="lb-cat"></span>
+    </div>
+  </div>
+</div>
+
+<div class="sep"></div>
+
+<!-- ============================================================
+     OPEN FOR COMMISSIONS BANNER
+     ============================================================ -->
+<section id="open-cta">
+  <div class="cta-badge reveal">
+    <div class="cta-dot"></div>
+    Open for Commissions
+  </div>
+
+  <h2 class="cta-title reveal">
+    Ready to build<br><em>your world?</em>
+  </h2>
+
+  <p class="cta-sub reveal">
+    Available for freelance work and indie game projects.<br>
+    Let's turn your vision into something unforgettable.
+  </p>
+
+  <div class="cta-btns reveal">
+    <a href="mailto:vulpeofc@gmail.com" class="btn-primary btn-pulse"><span>Hire Me</span></a>
+    <a href="#contact" class="btn-outline"><span>Contact Me</span></a>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- ============================================================
+     SERVICES SECTION
+     ============================================================ -->
+<section id="services">
+  <div class="s-label reveal">What I Do</div>
+  <h2 class="s-title reveal">Services</h2>
+
+  <div class="svc-grid">
+
+    <div class="svc-card reveal" style="transition-delay:0.00s">
+      <span class="svc-icon">⚔️</span>
+      <div class="svc-num">01</div>
+      <div class="svc-name">Character Sprites</div>
+      <p class="svc-desc">Full sprite sheets with idle, walk, run, attack, and death animations — for any engine and style, from cute to dark.</p>
+    </div>
+
+    <div class="svc-card reveal" style="transition-delay:0.08s">
+      <span class="svc-icon">🌆</span>
+      <div class="svc-num">02</div>
+      <div class="svc-name">Environment Art</div>
+      <p class="svc-desc">Immersive tilesets, background layers and parallax-ready scenes that breathe life and depth into your game world.</p>
+    </div>
+
+    <div class="svc-card reveal" style="transition-delay:0.16s">
+      <span class="svc-icon">🎨</span>
+      <div class="svc-num">03</div>
+      <div class="svc-name">Cover Art</div>
+      <p class="svc-desc">Iconic cover compositions built to stop players mid-scroll on Steam, itch.io or any storefront where first impressions sell games.</p>
+    </div>
+
+    <div class="svc-card reveal" style="transition-delay:0.08s">
+      <span class="svc-icon">🖥️</span>
+      <div class="svc-num">04</div>
+      <div class="svc-name">UI Assets</div>
+      <p class="svc-desc">Cohesive HUD elements, menus, icons and inventory kits that match your game's visual language perfectly.</p>
+    </div>
+
+    <div class="svc-card reveal" style="transition-delay:0.16s">
+      <span class="svc-icon">✦</span>
+      <div class="svc-num">05</div>
+      <div class="svc-name">Custom Pixel Art</div>
+      <p class="svc-desc">One-of-a-kind commissions — portraits, logos, icons, promotional material, or whatever your creative vision demands.</p>
+    </div>
+
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- ============================================================
+     PROCESS / WORKFLOW SECTION
+     ============================================================ -->
+<section id="process">
+  <div class="s-label reveal">How It Works</div>
+  <h2 class="s-title reveal">My <em>Process</em></h2>
+
+  <div class="process-steps">
+
+    <div class="proc-step reveal" style="transition-delay:0.00s">
+      <div class="proc-num">01</div>
+      <span class="proc-icon">✏️</span>
+      <div class="proc-title">Sketch</div>
+      <p class="proc-desc">We align on the vision. I rough out composition, silhouettes and proportions — catching problems before they become pixels.</p>
+    </div>
+
+    <div class="proc-step reveal" style="transition-delay:0.10s">
+      <div class="proc-num">02</div>
+      <span class="proc-icon">🧱</span>
+      <div class="proc-title">Blockout</div>
+      <p class="proc-desc">Large color shapes define the read. No details yet — only strong values and clear zones that work at any resolution.</p>
+    </div>
+
+    <div class="proc-step reveal" style="transition-delay:0.20s">
+      <div class="proc-num">03</div>
+      <span class="proc-icon">🎨</span>
+      <div class="proc-title">Palette</div>
+      <p class="proc-desc">A tight, intentional palette is locked in. Every hue earns its place, serving mood, readability and your brand identity.</p>
+    </div>
+
+    <div class="proc-step reveal" style="transition-delay:0.30s">
+      <div class="proc-num">04</div>
+      <span class="proc-icon">✨</span>
+      <div class="proc-title">Final Render</div>
+      <p class="proc-desc">Detail pass, lighting, anti-aliasing and animation. Delivered in all formats you need, ready to drop into your engine.</p>
+    </div>
+
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- ============================================================
+     TESTIMONIALS / SOCIAL PROOF
+     ============================================================ -->
+<section id="testimonials">
+  <div class="s-label reveal">Social Proof</div>
+  <h2 class="s-title reveal">What Clients <em>Say</em></h2>
+
+  <!-- Stats bar -->
+  <div class="proof-stats">
+    <div class="proof-stat reveal" style="transition-delay:0.00s">
+      <div class="ps-num">30+</div>
+      <div class="ps-lbl">Projects Completed</div>
+    </div>
+    <div class="proof-stat reveal" style="transition-delay:0.08s">
+      <div class="ps-num">4</div>
+      <div class="ps-lbl">Years Experience</div>
+    </div>
+    <div class="proof-stat reveal" style="transition-delay:0.16s">
+      <div class="ps-num">Unity · Godot</div>
+      <div class="ps-lbl">Engines Supported</div>
+    </div>
+    <div class="proof-stat reveal" style="transition-delay:0.24s">
+      <div class="ps-num">100%</div>
+      <div class="ps-lbl">Happy Clients</div>
+    </div>
+  </div>
+
+  <!-- Testimonial cards -->
+  <div class="testimonials-grid">
+
+    <div class="testi-card reveal" style="transition-delay:0.00s">
+      <p class="testi-text">
+        "Working with Vulpe was a game-changer. The environments delivered were beyond anything I imagined — atmospheric, detailed, and perfectly on-brand."
+      </p>
+      <div class="testi-author">
+        <div class="testi-avatar">A</div>
+        <div>
+          <div class="testi-name">Alex R.</div>
+          <div class="testi-role">Indie Developer · Unity</div>
+        </div>
+        <div class="testi-stars">★★★★★</div>
+      </div>
+    </div>
+
+    <div class="testi-card reveal" style="transition-delay:0.12s">
+      <p class="testi-text">
+        "Incredible attention to detail. The character sprites brought our whole game aesthetic together. Communication was clear and fast throughout."
+      </p>
+      <div class="testi-author">
+        <div class="testi-avatar">M</div>
+        <div>
+          <div class="testi-name">Maya T.</div>
+          <div class="testi-role">Game Director · Godot</div>
+        </div>
+        <div class="testi-stars">★★★★★</div>
+      </div>
+    </div>
+
+    <div class="testi-card reveal" style="transition-delay:0.24s">
+      <p class="testi-text">
+        "The cover art Vulpe produced went viral on social before launch. We got press coverage we never expected. Worth every cent and more."
+      </p>
+      <div class="testi-author">
+        <div class="testi-avatar">J</div>
+        <div>
+          <div class="testi-name">João P.</div>
+          <div class="testi-role">Solo Dev · Steam</div>
+        </div>
+        <div class="testi-stars">★★★★★</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- ============================================================
+     PRICING SECTION
+     ============================================================ -->
+<section id="pricing">
+  <div class="s-label reveal">Transparent Rates</div>
+  <h2 class="s-title reveal">Pricing</h2>
+
+  <div class="price-grid">
+
+    <div class="price-card reveal" style="transition-delay:0.00s">
+      <span class="p-icon">💠</span>
+      <div class="p-title">Icons &amp; Assets</div>
+      <div class="p-from">Starting at</div>
+      <div class="p-amount"><sup>$</sup>10</div>
+      <div class="p-line"></div>
+      <ul class="p-list">
+        <li>Single icon or UI element</li>
+        <li>Up to 64×64 px</li>
+        <li>PNG with transparency</li>
+        <li>1 revision included</li>
+      </ul>
+      <a href="mailto:vulpeofc@gmail.com" class="p-cta">Get a Quote</a>
+    </div>
+
+    <div class="price-card featured reveal" style="transition-delay:0.14s">
+      <span class="p-icon">🧬</span>
+      <div class="p-title">Sprites &amp; Characters</div>
+      <div class="p-from">Starting at</div>
+      <div class="p-amount"><sup>$</sup>15</div>
+      <div class="p-line"></div>
+      <ul class="p-list">
+        <li>Full character sprite sheet</li>
+        <li>Idle + walk animations</li>
+        <li>Source file delivered</li>
+        <li>2 revisions included</li>
+        <li>Commercial license</li>
+      </ul>
+      <a href="mailto:vulpeofc@gmail.com" class="p-cta">Get a Quote</a>
+    </div>
+
+    <div class="price-card reveal" style="transition-delay:0.28s">
+      <span class="p-icon">🌌</span>
+      <div class="p-title">Scenes &amp; Environments</div>
+      <div class="p-from">Starting at</div>
+      <div class="p-amount"><sup>$</sup>30</div>
+      <div class="p-line"></div>
+      <ul class="p-list">
+        <li>Full environment scene</li>
+        <li>Layered PSD / PNG</li>
+        <li>Parallax-ready layers</li>
+        <li>3 revisions included</li>
+        <li>Commercial license</li>
+      </ul>
+      <a href="mailto:vulpeofc@gmail.com" class="p-cta">Get a Quote</a>
+    </div>
+
+  </div>
+
+  <p class="price-note reveal">
+    All prices are starting rates. Complex commissions are quoted individually after a brief chat.
+  </p>
+</section>
+
+<div class="sep"></div>
+
+<!-- ============================================================
+     CONTACT SECTION
+     ============================================================ -->
+<section id="contact">
+  <div class="contact-inner">
+
+    <div class="s-label reveal" style="justify-content:center">
+      Let's Work Together
+    </div>
+
+    <h2 class="contact-title reveal">
+      Find me <em>here</em>
+    </h2>
+
+    <p class="contact-sub reveal">
+      Available for freelance work and indie game projects.<br>
+      Reach out anytime — I respond fast.
+    </p>
+
+    <div class="social-grid reveal">
+
+      <a href="https://www.instagram.com/vulpe_ofc/"
+         target="_blank" rel="noopener noreferrer"
+         class="social-btn">
+        <span class="si">📸</span>
+        <span class="sl">Instagram</span>
+      </a>
+
+      <a href="https://vulpeee.itch.io/"
+         target="_blank" rel="noopener noreferrer"
+         class="social-btn">
+        <span class="si">🎮</span>
+        <span class="sl">Itch.io</span>
+      </a>
+
+      <a href="mailto:vulpeofc@gmail.com" class="social-btn">
+        <span class="si">✉️</span>
+        <span class="sl">Email</span>
+      </a>
+
+      <!--
+        DISCORD: Replace the href with your actual Discord invite link,
+        or keep as a button that copies your tag to clipboard.
+        Example: href="https://discord.com/users/YOUR_USER_ID"
+      -->
+      <a href="#"
+         class="social-btn"
+         id="discordBtn"
+         title="Discord: add your username here">
+        <span class="si">💬</span>
+        <span class="sl">Discord</span>
+      </a>
+
+    </div>
+
+    <a href="mailto:vulpeofc@gmail.com" class="contact-email reveal">
+      vulpeofc@gmail.com
+    </a>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer>
+  <span class="foot-logo">VULPE</span>
+  <span class="foot-copy">© 2025 Vulpe — All rights reserved</span>
+  <span class="foot-tag">Pixel Art · Indie Games · Commissions</span>
+</footer>
+
+<!-- ============================================================
+     JAVASCRIPT — all logic in one place, clearly commented
+     ============================================================ -->
+<script>
+'use strict';
+
+/* ──────────────────────────────────────────────
+   SECTION A: CUSTOM CURSOR
+   Dot snaps instantly; ring lerps (smoothly follows)
+   ────────────────────────────────────────────── */
+(function initCursor() {
+  const dot  = document.getElementById('cursor-dot');
+  const ring = document.getElementById('cursor-ring');
+  if (!dot || !ring) return;
+
+  // Current real mouse position
+  let mx = 0, my = 0;
+  // Ring's interpolated position
+  let rx = 0, ry = 0;
+  // Lerp factor — smaller = more lag (more cinematic feel)
+  const LERP = 0.10;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX;
+    my = e.clientY;
+    // Dot moves instantly
+    dot.style.left = mx + 'px';
+    dot.style.top  = my + 'px';
+  });
+
+  // Ring animates on every frame via requestAnimationFrame
+  function animateRing() {
+    rx += (mx - rx) * LERP;
+    ry += (my - ry) * LERP;
+    ring.style.left = rx + 'px';
+    ring.style.top  = ry + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  // Expand cursor when hovering interactive elements
+  document.querySelectorAll('a, button, [role="button"], .g-item, .feat-item').forEach(el => {
+    el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+    el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+  });
+})();
+
+
+/* ──────────────────────────────────────────────
+   SECTION B: LOADING SCREEN
+   Hides the loader after fonts + window have loaded
+   ────────────────────────────────────────────── */
+window.addEventListener('load', () => {
+  // Wait a moment so the bar animation completes visually
+  setTimeout(() => {
+    document.getElementById('loader').classList.add('out');
+  }, 1700);
+});
+
+
+/* ──────────────────────────────────────────────
+   SECTION C: NAVIGATION
+   - Adds 'scrolled' class when user scrolls down
+   - Hamburger toggles mobile drawer
+   ────────────────────────────────────────────── */
+(function initNav() {
+  const nav   = document.getElementById('mainNav');
+  const hbg   = document.getElementById('hamburger');
+  const mNav  = document.getElementById('mobileNav');
+
+  // Scroll handler — debounced for performance
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 55);
+  }, { passive: true });
+
+  // Hamburger open/close
+  hbg.addEventListener('click', () => {
+    hbg.classList.toggle('open');
+    mNav.classList.toggle('open');
+    document.body.style.overflow = mNav.classList.contains('open') ? 'hidden' : '';
+  });
+
+  // Close mobile menu when any link is clicked
+  document.querySelectorAll('.mn').forEach(link => {
+    link.addEventListener('click', () => {
+      hbg.classList.remove('open');
+      mNav.classList.remove('open');
+      document.body.style.overflow = '';
+    });
+  });
+})();
+
+
+/* ──────────────────────────────────────────────
+   SECTION D: ANIMATED STARFIELD
+   Uses an HTML5 canvas to draw twinkling stars.
+   Stars drift slightly and respond to mouse parallax.
+   ────────────────────────────────────────────── */
+(function initStarfield() {
+  const canvas = document.getElementById('starfield');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  let W, H, stars = [];
+  // Mouse position for parallax (normalized -0.5 to 0.5)
+  let mouseX = 0, mouseY = 0;
+
+  function createStars() {
+    stars = [];
+    for (let i = 0; i < 180; i++) {
+      stars.push({
+        x:   Math.random() * W,
+        y:   Math.random() * H,
+        r:   Math.random() * 1.0 + 0.2,          // radius
+        a:   Math.random() * Math.PI * 2,          // phase for twinkle
+        sp:  Math.random() * 0.006 + 0.002,        // twinkle speed
+        dx:  (Math.random() - 0.5) * 0.055,        // horizontal drift
+        layer: Math.random()                        // 0=near, 1=far (for parallax depth)
+      });
+    }
+  }
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+    createStars();
+  }
+
+  // Track mouse for parallax effect
+  window.addEventListener('mousemove', e => {
+    mouseX = (e.clientX / window.innerWidth  - 0.5);
+    mouseY = (e.clientY / window.innerHeight - 0.5);
+  }, { passive: true });
+
+  // Debounce resize
+  let resizeT;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeT);
+    resizeT = setTimeout(resize, 200);
+  }, { passive: true });
+
+  resize();
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+
+    stars.forEach(s => {
+      // Update twinkle phase
+      s.a  += s.sp;
+      // Drift horizontally
+      s.x  += s.dx;
+      if (s.x < -4) s.x = W + 4;
+      if (s.x > W + 4) s.x = -4;
+
+      // Parallax offset: near stars move more
+      const px = mouseX * 22 * s.layer;
+      const py = mouseY * 14 * s.layer;
+
+      // Twinkle alpha
+      const alpha = (Math.sin(s.a) * 0.42 + 0.58) * 0.80;
+
+      ctx.beginPath();
+      ctx.arc(s.x + px, s.y + py, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(232,224,238,${alpha})`;
+      ctx.fill();
+    });
+
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+
+/* ──────────────────────────────────────────────
+   SECTION E: PIXEL-ART FOX PORTRAIT (About canvas)
+   Drawn procedurally — a stylized fox/vulpe pixel figure.
+   "Vulpe" means fox in Romanian.
+   ────────────────────────────────────────────── */
+(function initAboutCanvas() {
+  const canvas = document.getElementById('aboutCanvas');
+  if (!canvas) return;
+
+  // Size the canvas to fill its container
+  const parent = canvas.parentElement;
+  canvas.width  = parent.clientWidth  || 320;
+  canvas.height = parent.clientHeight || 420;
+
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const COLS = 20;
+  const ROWS = Math.round(COLS * (H / W));
+  const CW = W / COLS;
+  const CH = H / ROWS;
+
+  // Color palette — index maps to CSS color
+  const P = {
+    0: null,         // transparent
+    1: '#8B0000',    // deep crimson
+    2: '#C0392B',    // neon red (fox body)
+    3: '#722F37',    // wine
+    4: '#EDE5EE',    // near-white (eyes/markings)
+    5: '#040406',    // near-black (pupils)
+    6: '#5C0000',    // crimson deep (legs)
+    7: '#3D0A15',    // dark wine (feet)
+  };
+
+  // 20-column × 26-row pixel fox art (symmetrical fox silhouette)
+  const art = [
+    [0,0,0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0,0,0],
+    [0,0,0,0,0,1,1,1,1,0,0,1,1,1,1,0,0,0,0,0],
+    [0,0,0,0,1,1,2,1,1,1,1,1,1,2,1,1,0,0,0,0],
+    [0,0,0,1,1,2,2,2,1,1,1,1,2,2,2,1,1,0,0,0],
+    [0,0,0,1,2,2,2,2,2,1,1,2,2,2,2,2,1,0,0,0],
+    [0,0,1,1,2,2,4,2,2,2,2,2,2,4,2,2,1,1,0,0],
+    [0,0,1,2,2,2,4,4,2,2,2,2,4,4,2,2,2,1,0,0],
+    [0,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,1,0],
+    [0,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,0],
+    [0,1,2,2,5,5,2,2,2,2,2,2,2,2,5,5,2,2,1,0],
+    [0,1,2,2,5,5,2,2,2,2,2,2,2,2,5,5,2,2,1,0],
+    [0,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,0],
+    [0,0,1,2,2,2,2,4,4,2,2,4,4,2,2,2,2,1,0,0],
+    [0,0,1,2,2,2,2,2,4,4,4,4,2,2,2,2,2,1,0,0],
+    [0,0,0,1,2,2,2,2,2,4,4,2,2,2,2,2,1,0,0,0],
+    [0,0,0,1,1,2,2,2,2,2,2,2,2,2,2,1,1,0,0,0],
+    [0,0,0,0,1,1,2,2,2,2,2,2,2,2,1,1,0,0,0,0],
+    [0,0,0,0,0,1,1,1,2,2,2,2,1,1,1,0,0,0,0,0],
+    [0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0,0,0],
+    [0,0,0,0,6,6,0,1,1,1,1,1,1,0,6,6,0,0,0,0],
+    [0,0,0,6,6,6,6,0,0,1,1,0,0,6,6,6,6,0,0,0],
+    [0,0,6,6,7,7,6,6,0,1,1,0,6,6,7,7,6,6,0,0],
+    [0,6,6,7,7,7,7,6,6,0,0,6,6,7,7,7,7,6,6,0],
+    [6,6,7,7,7,7,7,7,6,0,0,6,7,7,7,7,7,7,6,6],
+    [6,7,7,7,7,7,7,7,7,0,0,7,7,7,7,7,7,7,7,6],
+    [6,6,6,6,6,6,6,6,6,0,0,6,6,6,6,6,6,6,6,6],
+  ];
+
+  // Draw the pixel art to canvas
+  function draw(shimmer) {
+    ctx.clearRect(0, 0, W, H);
+    const rows = Math.min(art.length, ROWS);
+    for (let r = 0; r < rows; r++) {
+      if (!art[r]) continue;
+      for (let c = 0; c < COLS; c++) {
+        const cell  = art[r][c];
+        let color   = P[cell];
+        if (!color) continue;
+        // Shimmer: randomly brighten red pixels
+        if (shimmer && cell === 2 && Math.random() < 0.12) color = '#E74C3C';
+        ctx.fillStyle = color;
+        ctx.fillRect(c * CW, r * CH, CW - 1, CH - 1);
+      }
+    }
+  }
+  draw(false);
+
+  // Shimmer on hover (random pixel flicker)
+  let shimmering = false;
+  const frame = canvas.closest('.about-frame');
+  if (frame) {
+    frame.addEventListener('mouseenter', () => {
+      if (shimmering) return;
+      shimmering = true;
+      let n = 0;
+      const t = setInterval(() => {
+        draw(true);
+        if (++n > 18) { clearInterval(t); draw(false); shimmering = false; }
+      }, 55);
+    });
+  }
+})();
+
+
+/* ──────────────────────────────────────────────
+   SECTION F: GALLERY — Real image support + fallback colours
+   Images are loaded from /images/artN.png
+   If an image fails to load, a dark background is shown instead.
+   ────────────────────────────────────────────── */
+(function initGallery() {
+  // Fallback background colours for when images are missing
+  const FALLBACK_COLORS = [
+    '#1a0808','#08081a','#060412',
+    '#080514','#050507','#06040a',
+    '#050507','#08050a','#050507',
+  ];
+
+  document.querySelectorAll('.g-img').forEach((img, i) => {
+    // Apply pixelated rendering for crisp pixel art
+    img.style.imageRendering = 'pixelated';
+
+    img.addEventListener('error', () => {
+      // Image failed to load — show coloured placeholder instead
+      const item = img.closest('.g-item');
+      if (item) {
+        item.style.background = FALLBACK_COLORS[i % FALLBACK_COLORS.length];
+        img.style.display = 'none';
+      }
+    });
+  });
+
+  // Same for featured strip images
+  document.querySelectorAll('.feat-img').forEach((img, i) => {
+    img.addEventListener('error', () => {
+      const item = img.closest('.feat-item');
+      if (item) {
+        item.style.background = FALLBACK_COLORS[i % FALLBACK_COLORS.length];
+        img.style.display = 'none';
+      }
+    });
+  });
+})();
+
+
+/* ──────────────────────────────────────────────
+   SECTION G: PORTFOLIO FILTER
+   Filter buttons show/hide gallery items by category
+   ────────────────────────────────────────────── */
+(function initFilter() {
+  document.querySelectorAll('.f-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      // Update active button
+      document.querySelectorAll('.f-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const filter = btn.dataset.f;
+      document.querySelectorAll('.g-item').forEach(item => {
+        const show = filter === 'all' || item.dataset.cat === filter;
+        item.style.display = show ? '' : 'none';
+      });
+    });
+  });
+})();
+
+
+/* ──────────────────────────────────────────────
+   SECTION H: LIGHTBOX
+   Click a gallery item to open a fullscreen preview.
+   Close by clicking outside, pressing Escape, or the close button.
+   ────────────────────────────────────────────── */
+(function initLightbox() {
+  const lb      = document.getElementById('lightbox');
+  const lbImg   = document.getElementById('lb-img');
+  const lbTitle = document.getElementById('lb-title');
+  const lbCat   = document.getElementById('lb-cat');
+  const lbClose = document.getElementById('lb-close');
+
+  function open(src, title, cat) {
+    lbImg.src        = src;
+    lbImg.alt        = title;
+    lbTitle.textContent = title;
+    lbCat.textContent   = cat.toUpperCase();
+    lb.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function close() {
+    lb.classList.remove('open');
+    document.body.style.overflow = '';
+    // Clear src after transition to avoid flash
+    setTimeout(() => { lbImg.src = ''; }, 350);
+  }
+
+  // Attach click to every gallery item
+  document.querySelectorAll('.g-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const img   = item.querySelector('.g-img');
+      const title = item.querySelector('.g-title')?.textContent || '';
+      const cat   = item.querySelector('.g-tag')?.textContent   || '';
+      if (img) open(img.src, title, cat);
+    });
+  });
+
+  // Featured strip items also open lightbox
+  document.querySelectorAll('.feat-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const img   = item.querySelector('.feat-img');
+      const title = item.dataset.title || '';
+      const cat   = item.dataset.cat   || '';
+      if (img) open(img.src, title, cat);
+    });
+  });
+
+  lbClose.addEventListener('click', close);
+  lb.addEventListener('click', e => { if (e.target === lb) close(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+})();
+
+
+/* ──────────────────────────────────────────────
+   SECTION I: SCROLL REVEAL
+   Uses IntersectionObserver to trigger fade-in animations
+   when elements enter the viewport.
+   ────────────────────────────────────────────── */
+(function initReveal() {
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('on');
+        observer.unobserve(entry.target); // animate once, then stop watching
+      }
+    });
+  }, { threshold: 0.10 });  // trigger when 10% visible
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+})();
+
+
+/* ──────────────────────────────────────────────
+   SECTION J: DISCORD BUTTON
+   Replace the href with your actual Discord link.
+   Currently shows an alert as a placeholder.
+   ────────────────────────────────────────────── */
+(function initDiscord() {
+  const btn = document.getElementById('discordBtn');
+  if (!btn) return;
+
+  btn.addEventListener('click', e => {
+    e.preventDefault();
+    // TODO: Replace this with your Discord invite link
+    // e.g.: window.open('https://discord.com/users/YOUR_ID', '_blank');
+    alert('Discord: Add your username or invite link here!\n\nEdit the discordBtn click handler in the JavaScript section.');
+  });
+})();
+
+</script>
+
+</body>
+</html>
