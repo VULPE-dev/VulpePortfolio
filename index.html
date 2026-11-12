@@ -802,17 +802,23 @@
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
-// Garante que a página sempre abra no topo ao carregar
+// Força a página a abrir sempre no topo e limpa #contact da URL
         if ('scrollRestoration' in history) {
-    history.scrollRestoration = 'manual';
-    }
-
-    window.addEventListener('load', () => {
-        if (!window.location.hash) {
-        window.scrollTo(0, 0);
+            history.scrollRestoration = 'manual';
         }
-    });
-        
+
+        if (window.location.hash) {
+            history.replaceState(null, null, window.location.pathname + window.location.search);
+        }
+
+        window.scrollTo(0, 0);
+
+        window.addEventListener('load', () => {
+            window.scrollTo(0, 0);
+            setTimeout(() => {
+                window.scrollTo(0, 0);
+            }, 100);
+        });
         // Gallery Filter Logic
         document.addEventListener('DOMContentLoaded', () => {
             const galleryItems = document.querySelectorAll('.gallery-item');
