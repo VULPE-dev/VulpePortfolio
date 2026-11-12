@@ -802,6 +802,17 @@
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
+// Garante que a página sempre abra no topo ao carregar
+        if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+    }
+
+    window.addEventListener('load', () => {
+        if (!window.location.hash) {
+        window.scrollTo(0, 0);
+        }
+    });
+        
         // Gallery Filter Logic
         document.addEventListener('DOMContentLoaded', () => {
             const galleryItems = document.querySelectorAll('.gallery-item');
