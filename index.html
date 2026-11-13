@@ -971,5 +971,114 @@
             });
         }
     </script>
+    <!-- LIGHTBOX / ZOOM DE ARTES -->
+<style>
+    .gallery-item, .featured-img-placeholder, .testimonial-art {
+        cursor: zoom-in;
+    }
+
+    #art-lightbox {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        /* Fundo escuro com um brilho suave centralizado */
+        background: radial-gradient(circle at center, rgba(255, 65, 108, 0.18) 0%, rgba(9, 9, 14, 0.94) 75%);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        opacity: 0;
+        transition: opacity 0.25s ease;
+        cursor: zoom-out;
+    }
+
+    #art-lightbox.active {
+        display: flex;
+        opacity: 1;
+    }
+
+    #art-lightbox-content img,
+    #art-lightbox-content video {
+        max-width: 92vw;
+        max-height: 85vh;
+        width: auto;
+        height: auto;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        box-shadow: 0 0 45px rgba(255, 65, 108, 0.3), 0 20px 50px rgba(0, 0, 0, 0.8);
+        transform: scale(0.95);
+        transition: transform 0.25s ease;
+    }
+
+    #art-lightbox.active #art-lightbox-content img,
+    #art-lightbox.active #art-lightbox-content video {
+        transform: scale(1);
+    }
+
+    #lightbox-close {
+        position: absolute;
+        top: 20px;
+        right: 25px;
+        color: #fff;
+        font-size: 2rem;
+        font-weight: bold;
+        line-height: 1;
+        cursor: pointer;
+        opacity: 0.7;
+        transition: opacity 0.2s;
+    }
+
+    #lightbox-close:hover {
+        opacity: 1;
+    }
+</style>
+
+<div id="art-lightbox" onclick="closeLightbox()">
+    <span id="lightbox-close">&times;</span>
+    <div id="art-lightbox-content"></div>
+</div>
+
+<script>
+    const lightbox = document.getElementById('art-lightbox');
+    const lightboxContent = document.getElementById('art-lightbox-content');
+
+    // Captura cliques nos cards da galeria, destaques e depoimentos
+    document.querySelectorAll('.gallery-item, .featured-img-placeholder, .testimonial-art').forEach(card => {
+        card.addEventListener('click', () => {
+            const media = card.querySelector('img, video');
+            if (!media) return;
+
+            lightboxContent.innerHTML = '';
+            const clone = media.cloneNode(true);
+            
+            if (clone.tagName === 'VIDEO') {
+                clone.controls = true;
+                clone.muted = false;
+                clone.play();
+            }
+
+            lightboxContent.appendChild(clone);
+            lightbox.style.display = 'flex';
+            setTimeout(() => lightbox.classList.add('active'), 10);
+        });
+    });
+
+    function closeLightbox() {
+        lightbox.classList.remove('active');
+        setTimeout(() => {
+            lightbox.style.display = 'none';
+            lightboxContent.innerHTML = '';
+        }, 250);
+    }
+
+    // Fecha também ao apertar a tecla ESC no computador
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+            closeLightbox();
+        }
+    });
+</script>
 </body>
 </html>
