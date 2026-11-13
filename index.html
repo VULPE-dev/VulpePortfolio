@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vulpe - Portfolio</title>
-    <!-- FontAwesome para Ícones -->
+    <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -36,7 +36,7 @@
             color: var(--text-main);
             line-height: 1.6;
             overflow-x: hidden;
-            /* Luzes ambientes para dar atmosfera de artista */
+            /* Ambient lights for an artistic atmosphere */
             background-image: 
                 radial-gradient(circle at 15% 10%, rgba(255, 65, 108, 0.06), transparent 40%),
                 radial-gradient(circle at 85% 40%, rgba(34, 197, 94, 0.03), transparent 40%),
@@ -48,7 +48,7 @@
             color: inherit;
         }
 
-        img {
+        img, video {
             max-width: 100%;
             height: auto;
             display: block;
@@ -165,7 +165,7 @@
             position: relative;
         }
 
-        /* Efeito de brilho atrás da imagem hero */
+        /* Glow effect behind the hero image */
         .hero-image::before {
             content: '';
             position: absolute;
@@ -220,7 +220,7 @@
             font-size: 1.1rem;
         }
 
-        /* GLASSMORPHISM BASE PARA CARDS */
+        /* BASE GLASSMORPHISM FOR CARDS */
         .glass-card {
             background: var(--surface-color);
             backdrop-filter: blur(12px);
@@ -326,7 +326,7 @@
             border: 1px solid var(--border-color);
         }
 
-        .gallery-item img {
+        .gallery-item img, .gallery-item video {
             width: 100%;
             height: 100%;
             object-fit: cover;
@@ -338,7 +338,7 @@
             border-color: rgba(255,255,255,0.3);
         }
 
-        .gallery-item:hover img {
+        .gallery-item:hover img, .gallery-item:hover video {
             transform: scale(1.1);
         }
 
@@ -556,7 +556,7 @@
             font-size: 0.9rem;
         }
 
-        /* === MOBILE RESPONSIVENESS (Otimizações solicitadas) === */
+        /* === MOBILE RESPONSIVENESS === */
         @media(max-width: 768px) {
             #hero {
                 padding: 6rem 0 2rem;
@@ -578,7 +578,7 @@
                 font-size: 1rem;
                 margin-bottom: 2rem;
             }
-            /* Minimizando a imagem no celular para o botão não sumir na tela */
+            /* Minimize image on mobile so the button stays visible */
             .dynamic-hero-img {
                 max-width: 200px;
                 margin-top: 1rem;
@@ -608,7 +608,7 @@
             </div>
             
             <div class="hero-image">
-                <img src="images/Vulpe1.png" alt="Vulpe Hero Image" class="dynamic-hero-img">
+                <img src="images/Vulpe1.png" alt="Vulpe Hero Image" class="dynamic-hero-img" onerror="this.src='images/character study.png'">
             </div>
         </header>
 
@@ -623,7 +623,7 @@
                 <!-- Art 1 -->
                 <div class="featured-card glass-card">
                     <div class="featured-img-placeholder">
-                        <img src="imagens/eruptum.png" alt="Eruptum Game Cover" onerror="this.src='https://placehold.co/400x300/15151e/555?text=Eruptum'">
+                        <img src="images/Eruptum.png" alt="Eruptum Game Cover">
                     </div>
                     <div class="featured-info">
                         <h3>Eruptum: Official Game Cover</h3>
@@ -634,10 +634,10 @@
                 <!-- Art 2 -->
                 <div class="featured-card glass-card">
                     <div class="featured-img-placeholder">
-                        <img src="imagens/luminescence.png" alt="Luminescence Art" onerror="this.src='https://placehold.co/400x300/15151e/555?text=Luminescence'">
+                        <img src="images/Black hole sun.png" alt="Black Hole Sun Art">
                     </div>
                     <div class="featured-info">
-                        <h3>Luminescence: Concept Art</h3>
+                        <h3>Black Hole Sun: Concept Art</h3>
                         <p>A breathtaking environmental illustration focusing on ethereal lighting and atmospheric mood. Demonstrating advanced color theory and particle effects to create a serene, glowing environment.</p>
                     </div>
                 </div>
@@ -645,18 +645,18 @@
                 <!-- Art 3 -->
                 <div class="featured-card glass-card">
                     <div class="featured-img-placeholder">
-                        <img src="imagens/platform2.png" alt="Platform 2 Level Assets" onerror="this.src='https://placehold.co/400x300/15151e/555?text=Platform+2'">
+                        <img src="images/cottage.png" alt="Cottage Assets">
                     </div>
                     <div class="featured-info">
-                        <h3>Platform 2: Level Assets</h3>
-                        <p>Detailed level design and meticulously crafted pixel assets. Showcasing seamless tile integration, interactive foreground elements, and vibrant parallax backgrounds for an immersive 2D experience.</p>
+                        <h3>Cottage: Environment Design</h3>
+                        <p>Detailed environment design and meticulously crafted pixel assets. Showcasing seamless tile integration and vibrant backgrounds for an immersive 2D experience.</p>
                     </div>
                 </div>
 
-                <!-- Art 4: Asuka (Nova adição para fechar o grid simétrico) -->
+                <!-- Art 4 -->
                 <div class="featured-card glass-card">
                     <div class="featured-img-placeholder">
-                        <img src="imagens/ASUKA.jpg" alt="Asuka Character Study" onerror="this.src='https://placehold.co/400x300/15151e/555?text=ASUKA.jpg'">
+                        <img src="images/ASUKA.jpg" alt="Asuka Character Study">
                     </div>
                     <div class="featured-info">
                         <h3>Asuka Langley: Character Study</h3>
@@ -684,42 +684,106 @@
             <div class="gallery-grid" id="gallery-grid">
                 <!-- Assets -->
                 <div class="gallery-item" data-cat="asset">
-                    <img src="https://placehold.co/400x300/15151e/555?text=Fantasy+UI+Pack" alt="Fantasy UI Pack">
-                    <div class="gallery-overlay"><div><h4>Fantasy UI Pack</h4><p>Asset</p></div></div>
+                    <img src="images/carrot 8.png" alt="Carrot Asset" loading="lazy">
+                    <div class="gallery-overlay"><div><h4>Carrot Asset</h4><p>Asset</p></div></div>
                 </div>
                 <div class="gallery-item" data-cat="asset">
-                    <img src="https://placehold.co/400x300/15151e/555?text=Pixel+Platformer+Tileset" alt="Pixel Platformer Tileset">
-                    <div class="gallery-overlay"><div><h4>Pixel Platformer Tileset</h4><p>Asset</p></div></div>
+                    <img src="images/fallen log.png" alt="Fallen Log" loading="lazy">
+                    <div class="gallery-overlay"><div><h4>Fallen Log</h4><p>Asset</p></div></div>
+                </div>
+                <div class="gallery-item" data-cat="asset">
+                    <img src="images/ux images/A dirt with feeling.png" alt="Dirt Texture" loading="lazy">
+                    <div class="gallery-overlay"><div><h4>Dirt Texture</h4><p>Asset</p></div></div>
                 </div>
 
-                <!-- Series -->
+                <!-- Series / Environments -->
                 <div class="gallery-item" data-cat="series">
-                    <img src="https://placehold.co/400x300/15151e/555?text=Cyberpunk+Cityscapes" alt="Cyberpunk Cityscapes">
-                    <div class="gallery-overlay"><div><h4>Cyberpunk Cityscapes</h4><p>Series</p></div></div>
+                    <img src="images/Attic.png" alt="Attic" loading="lazy">
+                    <div class="gallery-overlay"><div><h4>Attic</h4><p>Series</p></div></div>
                 </div>
                 <div class="gallery-item" data-cat="series">
-                    <img src="https://placehold.co/400x300/15151e/555?text=Fantasy+Creature+Collection" alt="Fantasy Creature Collection">
-                    <div class="gallery-overlay"><div><h4>Fantasy Creature Collection</h4><p>Series</p></div></div>
+                    <img src="images/bathroom1.png" alt="Bathroom 1" loading="lazy">
+                    <div class="gallery-overlay"><div><h4>Bathroom 1</h4><p>Series</p></div></div>
+                </div>
+                <div class="gallery-item" data-cat="series">
+                    <img src="images/bathroom2.png" alt="Bathroom 2" loading="lazy">
+                    <div class="gallery-overlay"><div><h4>Bathroom 2</h4><p>Series</p></div></div>
+                </div>
+                <div class="gallery-item" data-cat="series">
+                    <img src="images/cottage.png" alt="Cottage" loading="lazy">
+                    <div class="gallery-overlay"><div><h4>Cottage</h4><p>Series</p></div></div>
+                </div>
+                <div class="gallery-item" data-cat="series">
+                    <img src="images/Deck.png" alt="Deck" loading="lazy">
+                    <div class="gallery-overlay"><div><h4>Deck</h4><p>Series</p></div></div>
+                </div>
+                <div class="gallery-item" data-cat="series">
+                    <img src="images/Empty room.png" alt="Empty Room" loading="lazy">
+                    <div class="gallery-overlay"><div><h4>Empty Room</h4><p>Series</p></div></div>
+                </div>
+                <div class="gallery-item" data-cat="series">
+                    <img src="images/Garage.png" alt="Garage" loading="lazy">
+                    <div class="gallery-overlay"><div><h4>Garage</h4><p>Series</p></div></div>
                 </div>
 
                 <!-- Illustrations -->
                 <div class="gallery-item" data-cat="illustration">
-                    <img src="https://placehold.co/400x300/15151e/555?text=Crimson+Forest+Encounter" alt="Crimson Forest Encounter">
-                    <div class="gallery-overlay"><div><h4>Crimson Forest Encounter</h4><p>Illustration</p></div></div>
+                    <img src="images/At That Table.jpg" alt="At That Table" loading="lazy">
+                    <div class="gallery-overlay"><div><h4>At That Table</h4><p>Illustration</p></div></div>
                 </div>
                 <div class="gallery-item" data-cat="illustration">
-                    <img src="https://placehold.co/400x300/15151e/555?text=The+Last+Cyber+Samurai" alt="The Last Cyber Samurai">
-                    <div class="gallery-overlay"><div><h4>The Last Cyber Samurai</h4><p>Illustration</p></div></div>
+                    <img src="images/Black hole sun.png" alt="Black Hole Sun" loading="lazy">
+                    <div class="gallery-overlay"><div><h4>Black Hole Sun</h4><p>Illustration</p></div></div>
                 </div>
                 <div class="gallery-item" data-cat="illustration">
-                    <img src="https://placehold.co/400x300/15151e/555?text=Ethereal+Magic+Casting" alt="Ethereal Magic Casting">
-                    <div class="gallery-overlay"><div><h4>Ethereal Magic Casting</h4><p>Illustration</p></div></div>
+                    <img src="images/Character Study Hornet   Silksong.jpg" alt="Hornet - Silksong" loading="lazy">
+                    <div class="gallery-overlay"><div><h4>Hornet - Silksong</h4><p>Illustration</p></div></div>
+                </div>
+                <div class="gallery-item" data-cat="illustration">
+                    <img src="images/Character study.jpg" alt="Character Study 1" loading="lazy">
+                    <div class="gallery-overlay"><div><h4>Character Study</h4><p>Illustration</p></div></div>
+                </div>
+                <div class="gallery-item" data-cat="illustration">
+                    <img src="images/character study.png" alt="Character Study 2" loading="lazy">
+                    <div class="gallery-overlay"><div><h4>Character Study</h4><p>Illustration</p></div></div>
+                </div>
+                <div class="gallery-item" data-cat="illustration">
+                    <img src="images/Coli_The colorful spider.jpg" alt="The Colorful Spider" loading="lazy">
+                    <div class="gallery-overlay"><div><h4>The Colorful Spider</h4><p>Illustration</p></div></div>
+                </div>
+                <div class="gallery-item" data-cat="illustration">
+                    <img src="images/girl_with_scarf.png" alt="Girl with Scarf" loading="lazy">
+                    <div class="gallery-overlay"><div><h4>Girl with Scarf</h4><p>Illustration</p></div></div>
                 </div>
 
-                <!-- VFX -->
+                <!-- VFX / Animations -->
                 <div class="gallery-item" data-cat="vfx">
-                    <img src="https://placehold.co/400x300/15151e/555?text=Magic+Spell+FX+Pack" alt="Magic Spell FX Pack">
-                    <div class="gallery-overlay"><div><h4>Magic Spell FX Pack</h4><p>VFX</p></div></div>
+                    <video src="images/A very powerful attack.mp4" autoplay loop muted playsinline></video>
+                    <div class="gallery-overlay"><div><h4>Powerful Attack</h4><p>VFX</p></div></div>
+                </div>
+                <div class="gallery-item" data-cat="vfx">
+                    <video src="images/Good Night.mp4" autoplay loop muted playsinline></video>
+                    <div class="gallery-overlay"><div><h4>Good Night</h4><p>Animation</p></div></div>
+                </div>
+                <div class="gallery-item" data-cat="vfx">
+                    <img src="images/blue confetti blast 1.gif" alt="Blue Confetti Blast" loading="lazy">
+                    <div class="gallery-overlay"><div><h4>Blue Confetti Blast</h4><p>VFX</p></div></div>
+                </div>
+                <div class="gallery-item" data-cat="vfx">
+                    <img src="images/boss idle.gif" alt="Boss Idle" loading="lazy">
+                    <div class="gallery-overlay"><div><h4>Boss Idle</h4><p>Animation</p></div></div>
+                </div>
+                <div class="gallery-item" data-cat="vfx">
+                    <img src="images/BossTripleAttack.gif" alt="Boss Triple Attack" loading="lazy">
+                    <div class="gallery-overlay"><div><h4>Boss Triple Attack</h4><p>Animation</p></div></div>
+                </div>
+                <div class="gallery-item" data-cat="vfx">
+                    <img src="images/campfire.gif" alt="Campfire" loading="lazy">
+                    <div class="gallery-overlay"><div><h4>Campfire</h4><p>Animation</p></div></div>
+                </div>
+                <div class="gallery-item" data-cat="vfx">
+                    <img src="images/Colorful confetti attack.gif" alt="Colorful Confetti Attack" loading="lazy">
+                    <div class="gallery-overlay"><div><h4>Colorful Confetti Attack</h4><p>VFX</p></div></div>
                 </div>
             </div>
 
@@ -739,7 +803,7 @@
                 <!-- Testimonial 1: Mythical Rafa -->
                 <div class="testimonial-card glass-card">
                     <div class="testimonial-art">
-                        <img src="imagens/cone made with lots of care for @mythical_rafa.jpg" alt="Icon for Mythical Rafa" onerror="this.src='https://placehold.co/300x300/15151e/555?text=Rafa'">
+                        <img src="images/cone made with lots of care for @mythical_rafa.jpg" alt="Icon for Mythical Rafa">
                     </div>
                     <div class="testimonial-content">
                         <i class="fas fa-quote-left quote-icon"></i>
@@ -754,7 +818,7 @@
                 <!-- Testimonial 2: Deep Within (Flipped Classroom) -->
                 <div class="testimonial-card glass-card">
                     <div class="testimonial-art">
-                        <img src="imagens/Flipped classroom.png" alt="Flipped Classroom Asset" onerror="this.src='https://placehold.co/300x300/15151e/555?text=Deep+Within'">
+                        <img src="images/Flipped classroom.png" alt="Flipped Classroom Asset">
                     </div>
                     <div class="testimonial-content">
                         <i class="fas fa-quote-left quote-icon"></i>
@@ -802,7 +866,7 @@
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
-// Força a página a abrir sempre no topo e limpa #contact da URL
+        // Forces the page to always load at the top and clears #contact from URL
         if ('scrollRestoration' in history) {
             history.scrollRestoration = 'manual';
         }
@@ -819,6 +883,7 @@
                 window.scrollTo(0, 0);
             }, 100);
         });
+        
         // Gallery Filter Logic
         document.addEventListener('DOMContentLoaded', () => {
             const galleryItems = document.querySelectorAll('.gallery-item');
